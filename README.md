@@ -17,9 +17,11 @@
 
 ## API DOC
 
-### Productos
+
 
 <details>
+<summary>### Productos</summary>
+
 para el manejo de los Productos hacemos peticiones a la ruta http://localhost:3000/products
 
 **GET**: Para obtener a todos los productos (No es necesario ningun parametro)
