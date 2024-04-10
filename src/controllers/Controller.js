@@ -162,13 +162,23 @@ exports.putDiscounts = async (req, res) => {
   // Aplica el descuento en caso de que todos los campos sean validos
   user["discounts"][req.body.id] = req.body.discount
   await Users.findOneAndUpdate({email:req.body.email}, {discounts:user["discounts"]});
-  return await res.send("usuario creado correctamente!!");
+  return await res.send("Descuento aplicado correctamente!!");
 
 };
 
 exports.deleteDiscounts = async (req, res) => {
+  // Verificaciones para comprobar que el usuario existe
+  if(!req.body.email){return await res.status(400).send("Verifique el correo!")}
+  if(!Utils.ValidateEmail(req.body.email)){return await res.status(400).send("Verifique el correo!")}
   let user = await getUserFromMail(req.body.email)
+  if(!user){return await res.status(404).send("No se encontro un usuario con este correo!")}
+
+  // Verificaciones para comprobar que la marca a aplicar el descuento es valida
+  if(!req.body.id){return await res.status(400).send("No ha ingresado un ID de marca!")}
+  if(!ObjectId.isValid(req.body.id)){return await res.status(400).send("ID No valida")}
+
+  // En el caso de que exista un usuario y el ID sea valido se puede eliminar el descuento
   delete user["discounts"][req.body.id]
   await Users.findOneAndUpdate({email:req.body.email}, {discounts:user["discounts"]});
-  return await res.send("usuario creado correctamente!!");
+  return await res.send("descuento eliminado correctamente!!");
 };
