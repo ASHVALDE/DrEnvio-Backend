@@ -114,7 +114,7 @@ cuerpo de la peticion:
 <details>
 <summary> descuentos </summary>
 
-para el manejo de las usuarios hacemos peticiones a la ruta http://localhost:3000/discounts
+para el manejo de los descuentos hacemos peticiones a la ruta http://localhost:3000/discounts
 
 **GET**: Para obtener todos los descuentos de un usuario 
 
@@ -146,7 +146,7 @@ cuerpo de la peticion:
 <details>
 <summary> precios </summary>
 
-para el manejo de las usuarios hacemos peticiones a la ruta http://localhost:3000/prices/{id del usuario}/{nombre del producto}
+para obtener los precios a un producto hacemos peticiones a la ruta http://localhost:3000/prices/{id_del_usuario}/{nombre_del_producto}
 
 **GET**: Obtiene el precio para un producto aplicando descuentos del cliente
 
