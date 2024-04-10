@@ -126,24 +126,40 @@ exports.deleteUsuarios = async (req, res) => {
 
 
 async function getUserFromMail(email){
-  
   return await Users.findOne({email: email})
-
 }
 
 exports.getDiscounts = async (req, res) => {
+  //Hacemos las verificaciones de que existe un usuario con ese correo
   if(!req.body.email){return await res.status(400).send("Verifique el correo!")}
   if(!Utils.ValidateEmail(req.body.email)){return await res.status(400).send("Verifique el correo!")}
-
   let user = await getUserFromMail(req.body.email)
-
   if(!user){return await res.status(404).send("No se encontro un usuario con este correo!")}
-
+  //Si todo es correcto enviamos el descuento
   res.send(user.discounts);
 };
 
+
+
 exports.putDiscounts = async (req, res) => {
+  // Verificaciones para comprobar que el usuario existe
+  if(!req.body.email){return await res.status(400).send("Verifique el correo!")}
+  if(!Utils.ValidateEmail(req.body.email)){return await res.status(400).send("Verifique el correo!")}
   let user = await getUserFromMail(req.body.email)
+  if(!user){return await res.status(404).send("No se encontro un usuario con este correo!")}
+
+  // Verificaciones para comprobar que el descuento es valido
+  if(!req.body.discount){return await res.status(400).send("No ha ingresado un descuento!")}
+  if(isNaN(req.body.discount)){return await res.status(400).send("el descuento aplicado no es un numero!")}
+  if(0>=req.body.discount || req.body.discount> 100 ){return await res.status(400).send("No se puede aplicar un descuento de menos del 0% o mas del 100%!")}
+
+  // Verificaciones para comprobar que la marca a aplicar el descuento es valida
+  if(!req.body.id){return await res.status(400).send("No ha ingresado un ID de marca!")}
+  if(!ObjectId.isValid(req.body.id)){return await res.status(400).send("ID No valida")}
+  const marca = Brands.findOne({_id: req.body.id})
+  if(!marca){return await res.status(404).send("No existe una marca con esta ID!")}
+
+  // Aplica el descuento en caso de que todos los campos sean validos
   user["discounts"][req.body.id] = req.body.discount
   await Users.findOneAndUpdate({email:req.body.email}, {discounts:user["discounts"]});
   return await res.send("usuario creado correctamente!!");
