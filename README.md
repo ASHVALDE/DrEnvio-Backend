@@ -20,7 +20,7 @@
 
 
 <details>
-<summary>### Productos</summary>
+<summary>** Productos **</summary>
 
 para el manejo de los Productos hacemos peticiones a la ruta http://localhost:3000/products
 
