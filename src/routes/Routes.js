@@ -24,4 +24,8 @@ router.get('/discounts', (req,res)=>Controller.getDiscounts(req,res))
 router.put('/discounts', (req,res)=> Controller.putDiscounts(req,res))
 router.delete('/discounts', (req,res)=> Controller.deleteDiscounts(req,res))
 
+// Rutas para los precios
+router.get('/prices/:userid*/:nombreproducto*', (req,res)=>Controller.getPrices(req,res))
+
+
 module.exports = router;

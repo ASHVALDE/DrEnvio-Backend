@@ -8,6 +8,7 @@ const Utils = require('../utils/utils.js');
 const ObjectId = require('mongodb').ObjectId;
 
 
+
 exports.getProducts = async (req, res) => {
 
   // Obtenemos el nombres de las ID de las marcas para mandar esa informacion
@@ -227,4 +228,25 @@ exports.deleteDiscounts = async (req, res) => {
   delete user["discounts"][req.body.id]
   await Users.findOneAndUpdate({email:req.body.email}, {discounts:user["discounts"]});
   return await res.send("descuento eliminado correctamente!!");
+};
+
+
+exports.getPrices  = async (req, res) => {
+  //Hacemos las verificaciones de que existe un usuario con ese correo
+  if(!req.params['userid']){return await res.status(400).send("No ha ingresado un ID de usuario!")}
+  if(!ObjectId.isValid(req.params['userid'])){return await res.status(400).send("ID No valida")}
+
+  const user = await Users.findById(req.params['userid'])
+  if(!user){return await res.status(404).send("No se encontro un usuario con este ID!")}
+
+  //user.discounts
+
+  const producto = await Products.findOne({name:req.params['nombreproducto']})
+  if(!producto){return await res.status(404).send("No se encontro un producto con este nombre!")}
+  
+  const descuento = user.discounts[producto.brand] || 0
+  const precio = producto.price - producto.price * (descuento/100)
+
+  return await res.send(precio.toString())
+
 };
