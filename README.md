@@ -19,6 +19,7 @@
 
 ### Productos
 
+<details>
 para el manejo de los Productos hacemos peticiones a la ruta http://localhost:3000/products
 
 **GET**: Para obtener a todos los productos (No es necesario ningun parametro)
@@ -53,3 +54,5 @@ cuerpo de la peticion:
 | brand  | String (Opcional) | Adidas  | Nuevo nombre de la marca (No importan las mayusculas), esta debe existir en la base de datos  |
 | stock  | Numero positivo (Opcional) | 900  | Nueva cantidad del producto, debe ser mayor a 0 para mostrarse |
 | price  | Numero positivo (Opcional) | 250000  | Nuevo precio del producto  |
+
+</details>
