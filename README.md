@@ -19,15 +19,18 @@
 
 * Los cuerpos de peticion deben estar en JSON un ejemplo seria:
 
-`` 
-{
+``{
+
     "name":"Zapatillas 2",
+
     "brand":"Adidas",
+
     "stock":9900,
+
     "price":100
     
-}
-``
+
+}``
 
 <details>
 <summary> Productos </summary>
