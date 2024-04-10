@@ -8,11 +8,29 @@ const Utils = require('../utils/utils.js');
 const ObjectId = require('mongodb').ObjectId;
 
 
-
 exports.getProducts = async (req, res) => {
-  Products.find({}).then(async function (products) {
-    return await res.send(products);
-  });
+
+  // Obtenemos el nombres de las ID de las marcas para mandar esa informacion
+  // Podriamos usar "Populate" para hacer eso con mongoose pero perderiamos el ID
+  // De las marcas y es necesario para varios procesos
+
+  let nombresMarcas = {}
+  const marcas = await Brands.find({})
+  marcas.forEach((marca)=>{
+    nombresMarcas[marca["_id"].toString()] = marca["name"]
+  })
+
+  
+  let productos = await Products.find({})
+  let prueba = []
+  productos.forEach(async (v,k)=>{ 
+    let clone = JSON.parse(JSON.stringify(v))
+    clone.brandName = nombresMarcas[v["brand"].toString()] || "NA"
+    if(isNaN(clone.stock) || clone.stock<=0){return;}
+    prueba.push(clone)
+  })
+  return await res.send(prueba);
+  
 };
 
 exports.putProducts = async (req, res) => {
@@ -41,6 +59,34 @@ exports.putProducts = async (req, res) => {
 
   return await res.send("Producto creado correctamente!!");
 
+};
+
+exports.updateProducts = async (req, res) => {
+  // Verificaciones para comprobar que la marca del producto que se registra existe
+  // En el caso de que si exista cambia la marca a su ID en la base de datos
+  if (!req.body.brand) {
+    return await res.send("No se especifico la marca!");
+  }
+  let marcaEnDB = await Brands.findOne({ "name": req.body.brand.toLowerCase() })
+  if (!marcaEnDB) {
+    return await res.send("No se encontro la marca!");
+  }
+  req.body.brand = marcaEnDB._id
+
+  if(!ObjectId.isValid(req.body.id)){
+    return await res.status(400).send("ID No valida")
+  }
+  try {
+    let clone = JSON.parse(JSON.stringify(req.body))
+    delete clone.id
+    await Products.findOneAndUpdate({_id:req.body.id},clone)
+  } catch (err) {
+    console.log(err)
+    // Si hay algun error en la creacion del objeto, se hizo una peticion erronea
+    return await res.status(400).send("Error en la peticion, verifique los parametros")
+  }
+
+  return await res.send("Producto actualizado correctamente!!");
 };
 
 exports.deleteProducts = async (req, res) => {

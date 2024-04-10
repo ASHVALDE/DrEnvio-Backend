@@ -6,6 +6,7 @@ const Controller = require('../controllers/Controller');
 // Rutas de los productos
 router.get('/products', (req,res)=>Controller.getProducts(req,res));
 router.put('/products', (req,res)=>Controller.putProducts(req,res));
+router.put('/updateProducts', (req,res)=>Controller.updateProducts(req,res));
 router.delete('/products', (req,res)=>Controller.deleteProducts(req,res));
 
 // Rutas para las marcas
